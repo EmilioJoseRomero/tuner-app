@@ -28,6 +28,7 @@
       "@components/*": ["src/presentation/components/*"],
       "@screens/*": ["src/presentation/screens/*"],
       "@navigation/*": ["src/presentation/navigation/*"],
+      "@styles/*": ["src/presentation/styles/*"],
       
       // Shared
       "@shared/*": ["src/shared/*"],
