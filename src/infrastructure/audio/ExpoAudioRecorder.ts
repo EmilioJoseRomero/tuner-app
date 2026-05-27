@@ -1,5 +1,5 @@
 import { Audio, AVPlaybackSource } from 'expo-av';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 
 export interface AudioBuffer {
   data: Float32Array;
@@ -16,7 +16,7 @@ export interface IAudioDataSource {
 export class ExpoAudioRecorder implements IAudioDataSource {
   private recording: Audio.Recording | null = null;
   private isRecording = false;
-  private recordingInterval: NodeJS.Timeout | null = null;
+  private recordingInterval: ReturnType<typeof setInterval> | null = null;
 
   async startRecording(callback: (buffer: AudioBuffer) => void): Promise<void> {
     try {
