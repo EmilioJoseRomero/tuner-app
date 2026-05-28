@@ -2,29 +2,29 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { TunerScreen } from '@presentation/screens/TunerScreen';
 import { SoundScreen } from '@presentation/screens/SoundScreen';
 import { GyroscopeScreen } from '@presentation/screens/GyroscopeScreen';
+import { MicTestScreen } from '@presentation/screens/MicTestScreen';
 
-type Tab = 'Tuning' | 'Sound' | 'Gyroscope';
+type Tab = 'Sound' | 'Gyroscope' | 'MicTest';
 
 const TABS: { key: Tab; icon: keyof typeof MaterialIcons.glyphMap; label: string }[] = [
-  { key: 'Tuning', icon: 'tune', label: 'Tuning' },
   { key: 'Sound', icon: 'volume-up', label: 'Sound' },
   { key: 'Gyroscope', icon: 'vibration', label: 'Gyroscope' },
+  { key: 'MicTest', icon: 'mic', label: 'Mic Test' },
 ];
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<Tab>('Tuning');
+  const [activeTab, setActiveTab] = useState<Tab>('Sound');
 
   const renderScreen = () => {
     switch (activeTab) {
-      case 'Tuning':
-        return <TunerScreen />;
       case 'Sound':
         return <SoundScreen />;
       case 'Gyroscope':
         return <GyroscopeScreen />;
+      case 'MicTest':
+        return <MicTestScreen />;
     }
   };
 
