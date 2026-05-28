@@ -7,13 +7,13 @@ export class ExpoGyroscopeAdapter implements IGyroscopeDataSource {
 
   startListening(callback: (data: GyroscopeData) => void): Subscription {
     this.stopListening();
-    
+
     this.listener = Gyroscope.addListener((sensorData) => {
       const data = new GyroscopeData(
         sensorData.x,
         sensorData.y,
         sensorData.z,
-        Date.now()
+        Date.now(),
       );
       callback(data);
     });

@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "tuner-app",
-    "slug": "tuner-app",
+    "name": "Practice Sessions",
+    "slug": "practice-sessions",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/grabar.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
@@ -23,7 +23,7 @@
         "RECORD_AUDIO"
       ],
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/grabar.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Audio } from 'expo-av';
 import { PracticeSession } from '@hooks/useGyroRecorder';
+import { COLORS } from '@styles/tunerStyles';
 
 interface SessionListProps {
   sessions: PracticeSession[];
@@ -106,44 +107,44 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 14,
     borderRadius: 12,
-    backgroundColor: 'rgba(11, 11, 15, 0.7)',
+    backgroundColor: COLORS.surface,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.05)',
+    borderColor: COLORS.border,
   },
   info: {
     gap: 6,
   },
   dateText: {
-    color: '#e5e2e1',
+    color: COLORS.text,
     fontSize: 14,
     fontWeight: '600',
   },
   metaText: {
-    color: 'rgba(229, 226, 225, 0.6)',
+    color: COLORS.textMuted,
     fontSize: 12,
   },
   playButton: {
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 10,
-    backgroundColor: 'rgba(74, 225, 118, 0.2)',
+    backgroundColor: COLORS.accentLight,
     borderWidth: 1,
-    borderColor: 'rgba(74, 225, 118, 0.4)',
+    borderColor: COLORS.accentGlow,
   },
   playButtonText: {
-    color: '#4ae176',
+    color: COLORS.accent,
     fontSize: 12,
     fontWeight: '600',
   },
   emptyContainer: {
     padding: 16,
     borderRadius: 12,
-    backgroundColor: 'rgba(11, 11, 15, 0.6)',
+    backgroundColor: COLORS.surface,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.05)',
+    borderColor: COLORS.border,
   },
   emptyText: {
-    color: 'rgba(229, 226, 225, 0.6)',
+    color: COLORS.textMuted,
     fontSize: 13,
     textAlign: 'center',
   },

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Audio, Recording } from 'expo-av';
+import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import { Gyroscope } from 'expo-sensors';
 
@@ -23,7 +23,7 @@ const GYRO_INTERVAL_MS = 100;
 const SESSIONS_DIR = `${FileSystem.documentDirectory}sessions`;
 const SESSIONS_FILE = `${SESSIONS_DIR}/sessions.json`;
 
-let globalRecording: Recording | null = null;
+let globalRecording: Audio.Recording | null = null;
 let globalPreparing = false;
 let globalQueue = Promise.resolve();
 
@@ -35,7 +35,7 @@ export function useGyroRecorder() {
   const [isStable, setIsStable] = useState(false);
   const [isBusy, setIsBusy] = useState(false);
 
-  const recordingRef = useRef<Recording | null>(null);
+  const recordingRef = useRef<Audio.Recording | null>(null);
   const preparingRef = useRef(false);
   const lastStatusRef = useRef<Audio.RecordingStatus | null>(null);
   const stableStartRef = useRef<number | null>(null);
@@ -193,8 +193,10 @@ export function useGyroRecorder() {
       globalRecording = recording;
 
       await recording.prepareToRecordAsync(Audio.RecordingOptionsPresets.HIGH_QUALITY);
-      if (typeof recording.setProgressUpdateIntervalAsync === 'function') {
-        await recording.setProgressUpdateIntervalAsync(250);
+      if (typeof (recording as any).setProgressUpdateIntervalAsync === 'function') {
+        await (recording as any).setProgressUpdateIntervalAsync(250);
+      } else if (typeof (recording as any).setProgressUpdateInterval === 'function') {
+        (recording as any).setProgressUpdateInterval(250);
       }
       recording.setOnRecordingStatusUpdate((statusUpdate) => {
         lastStatusRef.current = statusUpdate;
