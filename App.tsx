@@ -4,12 +4,14 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { SoundScreen } from '@presentation/screens/SoundScreen';
 import { GyroscopeScreen } from '@presentation/screens/GyroscopeScreen';
+import { MicTestScreen } from '@presentation/screens/MicTestScreen';
 
-type Tab = 'Sound' | 'Gyroscope';
+type Tab = 'Sound' | 'Gyroscope' | 'MicTest';
 
 const TABS: { key: Tab; icon: keyof typeof MaterialIcons.glyphMap; label: string }[] = [
   { key: 'Sound', icon: 'volume-up', label: 'Sound' },
   { key: 'Gyroscope', icon: 'vibration', label: 'Gyroscope' },
+  { key: 'MicTest', icon: 'mic', label: 'Mic Test' },
 ];
 
 export default function App() {
@@ -21,6 +23,8 @@ export default function App() {
         return <SoundScreen />;
       case 'Gyroscope':
         return <GyroscopeScreen />;
+      case 'MicTest':
+        return <MicTestScreen />;
     }
   };
 
