@@ -231,6 +231,17 @@ export function useGyroRecorder() {
       // Ignore stop errors.
     }
 
+    try {
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: false,
+        playsInSilentModeIOS: true,
+        shouldDuckAndroid: false,
+        playThroughEarpieceAndroid: false,
+      });
+    } catch {
+      // Ignore audio mode errors.
+    }
+
     const uri = recording.getURI();
     recordingRef.current = null;
     if (globalRecording === recording) {

@@ -38,9 +38,16 @@ export function SessionList({ sessions }: SessionListProps) {
       await stopSound();
     }
 
+    await Audio.setAudioModeAsync({
+      allowsRecordingIOS: false,
+      playsInSilentModeIOS: true,
+      shouldDuckAndroid: false,
+      playThroughEarpieceAndroid: false,
+    });
+
     const { sound: nextSound } = await Audio.Sound.createAsync(
       { uri: session.fileUri },
-      { shouldPlay: true },
+      { shouldPlay: true, volume: 1.0 },
       (status) => {
         if (!status.isLoaded) return;
         if (status.didJustFinish) {
