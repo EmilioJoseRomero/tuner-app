@@ -86,6 +86,7 @@ const styles = StyleSheet.create({
   content: {
     padding: 24,
     paddingBottom: 140,
+    paddingTop: 56,
   },
   title: {
     color: '#4ae176',
