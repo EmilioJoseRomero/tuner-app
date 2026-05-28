@@ -5,16 +5,31 @@ import { useDeviceStability } from '@hooks/useDeviceStability';
 export function GyroscopeScreen() {
   const { stability, isAvailable, error } = useDeviceStability();
 
-  const bg = !stability ? '#666' : stability.state === 'UNSTABLE' ? '#F44336' : '#4ae176';
-  const status = !stability ? 'INIT...' : !isAvailable ? 'NOT AVAILABLE' : stability.state === 'UNSTABLE' ? 'UNSTABLE' : 'STABLE';
+  const status = !stability
+    ? 'INIT...'
+    : !isAvailable
+      ? 'NOT AVAILABLE'
+      : stability.state === 'UNSTABLE'
+        ? 'UNSTABLE'
+        : 'STABLE';
 
   return (
-    <View style={[styles.container, { backgroundColor: bg }]}>
+    <View style={styles.container}>
       <Text style={styles.title}>Gyroscope Test</Text>
-      
+
       <View style={styles.card}>
-        <Text style={styles.label}>Status:</Text>
-        <Text style={styles.value}>{status}</Text>
+        <View style={styles.row}>
+          <Text style={styles.label}>Status</Text>
+          <Text
+            style={[
+              styles.value,
+              status === 'UNSTABLE' && styles.valueError,
+              status === 'STABLE' && styles.valueAccent,
+            ]}
+          >
+            {status}
+          </Text>
+        </View>
       </View>
 
       {stability && (
@@ -46,23 +61,26 @@ function Row({ label, value }: { label: string; value: string }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#050505',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 24,
     paddingBottom: 120,
   },
   title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 40,
+    color: '#4ae176',
+    fontSize: 22,
+    fontWeight: '600',
+    marginBottom: 16,
   },
   card: {
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    padding: 20,
-    borderRadius: 12,
+    padding: 16,
+    borderRadius: 16,
+    backgroundColor: 'rgba(11, 11, 15, 0.7)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.05)',
     width: '100%',
-    maxWidth: 300,
+    maxWidth: 320,
     marginBottom: 16,
   },
   row: {
@@ -71,24 +89,33 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   label: {
-    fontSize: 16,
-    color: 'rgba(255,255,255,0.7)',
+    color: 'rgba(229, 226, 225, 0.6)',
+    fontSize: 13,
   },
   value: {
-    fontSize: 16,
-    color: '#fff',
+    color: '#e5e2e1',
+    fontSize: 13,
     fontWeight: '600',
   },
+  valueAccent: {
+    color: '#4ae176',
+  },
+  valueError: {
+    color: '#F44336',
+  },
   errorCard: {
-    backgroundColor: 'rgba(244,67,54,0.3)',
-    padding: 16,
-    borderRadius: 8,
+    marginTop: 12,
+    padding: 12,
+    borderRadius: 10,
+    backgroundColor: 'rgba(244, 67, 54, 0.2)',
+    borderWidth: 1,
+    borderColor: 'rgba(244, 67, 54, 0.4)',
     width: '100%',
-    maxWidth: 300,
+    maxWidth: 320,
   },
   errorText: {
-    color: '#fff',
+    color: '#F44336',
     textAlign: 'center',
-    fontSize: 14,
+    fontSize: 13,
   },
 });
