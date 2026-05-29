@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Audio, Recording } from 'expo-av';
+import { Audio } from 'expo-av';
+import { tunerStyles, COLORS } from '@styles/tunerStyles';
 
 export function MicTestScreen() {
   const [status, setStatus] = useState<'Listo' | 'Probando...' | 'Detenido'>('Listo');
@@ -8,7 +9,7 @@ export function MicTestScreen() {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [isBusy, setIsBusy] = useState(false);
 
-  const recordingRef = useRef<Recording | null>(null);
+  const recordingRef = useRef<Audio.Recording | null>(null);
 
   useEffect(() => {
     return () => {
@@ -25,7 +26,8 @@ export function MicTestScreen() {
       } else {
         setError(null);
       }
-    } catch {
+    } catch (err) {
+      console.error('Microphone permission error:', err);
       setHasPermission(false);
       setError('Microphone permission error');
     }
@@ -52,14 +54,17 @@ export function MicTestScreen() {
       recordingRef.current = recording;
 
       await recording.prepareToRecordAsync(Audio.RecordingOptionsPresets.HIGH_QUALITY);
-      if (typeof recording.setProgressUpdateIntervalAsync === 'function') {
-        await recording.setProgressUpdateIntervalAsync(250);
+      if (typeof (recording as any).setProgressUpdateIntervalAsync === 'function') {
+        await (recording as any).setProgressUpdateIntervalAsync(250);
+      } else if (typeof (recording as any).setProgressUpdateInterval === 'function') {
+        (recording as any).setProgressUpdateInterval(250);
       }
       await recording.startAsync();
       setStatus('Probando...');
       setError(null);
     } catch (err) {
       recordingRef.current = null;
+      console.error('Failed to start recording:', err);
       setStatus('Listo');
       setError(`Failed to start recording: ${String(err)}`);
     } finally {
@@ -73,7 +78,8 @@ export function MicTestScreen() {
 
     try {
       await recording.stopAndUnloadAsync();
-    } catch {
+    } catch (err) {
+      console.error('Failed to stop recording:', err);
       // Ignore stop errors.
     }
 
@@ -99,11 +105,11 @@ export function MicTestScreen() {
 
       {hasPermission === false && (
         <TouchableOpacity
-          style={styles.permissionButton}
+          style={tunerStyles.permissionButton}
           onPress={requestPermission}
           activeOpacity={0.7}
         >
-          <Text style={styles.permissionButtonText}>Request Permission</Text>
+          <Text style={tunerStyles.permissionButtonText}>Request Permission</Text>
         </TouchableOpacity>
       )}
 
@@ -115,20 +121,20 @@ export function MicTestScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#050505',
+    backgroundColor: COLORS.background,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 24,
     paddingBottom: 120,
   },
   title: {
-    color: '#4ae176',
+    color: COLORS.accent,
     fontSize: 22,
     fontWeight: '600',
     marginBottom: 12,
   },
   status: {
-    color: '#e5e2e1',
+    color: COLORS.text,
     fontSize: 14,
     marginBottom: 20,
   },
@@ -136,31 +142,19 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 12,
-    backgroundColor: '#4ae176',
+    backgroundColor: COLORS.accent,
   },
   buttonActive: {
-    backgroundColor: '#F44336',
+    backgroundColor: COLORS.error,
   },
   buttonText: {
-    color: '#050505',
+    color: COLORS.background,
     fontSize: 14,
     fontWeight: '700',
   },
-  permissionButton: {
-    marginTop: 16,
-    alignItems: 'center',
-    paddingVertical: 12,
-    borderRadius: 10,
-    backgroundColor: '#4ae176',
-  },
-  permissionButtonText: {
-    color: '#050505',
-    fontSize: 13,
-    fontWeight: '600',
-  },
   error: {
     marginTop: 16,
-    color: '#F44336',
+    color: COLORS.error,
     fontSize: 12,
     textAlign: 'center',
   },

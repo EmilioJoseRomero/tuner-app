@@ -1,6 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 import { GyroRecorderStatus } from '@hooks/useGyroRecorder';
+import { COLORS } from '@styles/tunerStyles';
 
 interface RecorderButtonProps {
   status: GyroRecorderStatus;
@@ -40,16 +41,16 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 12,
-    backgroundColor: '#4ae176',
+    backgroundColor: COLORS.accent,
   },
   actionButtonActive: {
-    backgroundColor: '#F44336',
+    backgroundColor: COLORS.error,
   },
   actionButtonDisabled: {
     opacity: 0.4,
   },
   actionButtonText: {
-    color: '#050505',
+    color: COLORS.background,
     fontSize: 14,
     fontWeight: '700',
   },

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Audio, Recording } from 'expo-av';
+import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import { Gyroscope } from 'expo-sensors';
 
@@ -23,7 +23,7 @@ const GYRO_INTERVAL_MS = 100;
 const SESSIONS_DIR = `${FileSystem.documentDirectory}sessions`;
 const SESSIONS_FILE = `${SESSIONS_DIR}/sessions.json`;
 
-let globalRecording: Recording | null = null;
+let globalRecording: Audio.Recording | null = null;
 let globalPreparing = false;
 let globalQueue = Promise.resolve();
 
@@ -35,7 +35,7 @@ export function useGyroRecorder() {
   const [isStable, setIsStable] = useState(false);
   const [isBusy, setIsBusy] = useState(false);
 
-  const recordingRef = useRef<Recording | null>(null);
+  const recordingRef = useRef<Audio.Recording | null>(null);
   const preparingRef = useRef(false);
   const lastStatusRef = useRef<Audio.RecordingStatus | null>(null);
   const stableStartRef = useRef<number | null>(null);
@@ -44,7 +44,7 @@ export function useGyroRecorder() {
   const stoppingRef = useRef(false);
 
   useEffect(() => {
-    void loadSessions();
+    void loadSessions(); // Load recording sessions
   }, []);
 
   useEffect(() => {
@@ -117,7 +117,8 @@ export function useGyroRecorder() {
       } else {
         setError(null);
       }
-    } catch {
+    } catch (err) {
+      console.error('Microphone permission error:', err);
       setHasPermission(false);
       setError('Microphone permission error');
     }
@@ -141,7 +142,8 @@ export function useGyroRecorder() {
       const raw = await FileSystem.readAsStringAsync(SESSIONS_FILE);
       const parsed = JSON.parse(raw) as PracticeSession[];
       setSessions(parsed);
-    } catch {
+    } catch (err) {
+      console.error('Failed to load sessions:', err);
       setError('Failed to load sessions');
     }
   };
@@ -176,7 +178,8 @@ export function useGyroRecorder() {
         try {
           globalRecording.setOnRecordingStatusUpdate(null);
           await globalRecording.stopAndUnloadAsync();
-        } catch {
+        } catch (err) {
+          console.error('Failed to stop stale recording:', err);
           // Ignore errors while releasing stale recording.
         } finally {
           globalRecording = null;
@@ -193,8 +196,10 @@ export function useGyroRecorder() {
       globalRecording = recording;
 
       await recording.prepareToRecordAsync(Audio.RecordingOptionsPresets.HIGH_QUALITY);
-      if (typeof recording.setProgressUpdateIntervalAsync === 'function') {
-        await recording.setProgressUpdateIntervalAsync(250);
+      if (typeof (recording as any).setProgressUpdateIntervalAsync === 'function') {
+        await (recording as any).setProgressUpdateIntervalAsync(250);
+      } else if (typeof (recording as any).setProgressUpdateInterval === 'function') {
+        (recording as any).setProgressUpdateInterval(250);
       }
       recording.setOnRecordingStatusUpdate((statusUpdate) => {
         lastStatusRef.current = statusUpdate;
@@ -206,6 +211,7 @@ export function useGyroRecorder() {
     } catch (err) {
       recordingRef.current = null;
       globalRecording = null;
+      console.error('Failed to start recording:', err);
       setError(`Failed to start recording: ${String(err)}`);
       setStatus(isStable ? 'Listo para grabar' : 'Esperando estabilidad...');
     } finally {
@@ -227,8 +233,21 @@ export function useGyroRecorder() {
     try {
       recording.setOnRecordingStatusUpdate(null);
       await recording.stopAndUnloadAsync();
-    } catch {
+    } catch (err) {
+      console.error('Failed to stop recording:', err);
       // Ignore stop errors.
+    }
+
+    try {
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: false,
+        playsInSilentModeIOS: true,
+        shouldDuckAndroid: false,
+        playThroughEarpieceAndroid: false,
+      });
+    } catch (err) {
+      console.error('Failed to switch audio mode:', err);
+      // Ignore audio mode errors.
     }
 
     const uri = recording.getURI();
@@ -270,7 +289,8 @@ export function useGyroRecorder() {
             setStatus('Esperando estabilidad...');
           }
         }, 800);
-      } catch {
+      } catch (err) {
+        console.error('Failed to save recording:', err);
         setError('Failed to save recording');
         setStatus(isStable ? 'Listo para grabar' : 'Esperando estabilidad...');
       }
@@ -295,7 +315,8 @@ export function useGyroRecorder() {
           try {
             globalRecording.setOnRecordingStatusUpdate(null);
             await globalRecording.stopAndUnloadAsync();
-          } catch {
+          } catch (err) {
+            console.error('Failed to stop stale recording on reset:', err);
             // Ignore errors while releasing a stale recording.
           } finally {
             globalRecording = null;
