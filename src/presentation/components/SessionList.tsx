@@ -17,6 +17,8 @@ export function SessionList({ sessions }: SessionListProps) {
     try {
       await sound.stopAsync();
       await sound.unloadAsync();
+    } catch (err) {
+      console.error('Failed to stop sound:', err);
     } finally {
       setSound(null);
       setPlayingId(null);
@@ -39,26 +41,30 @@ export function SessionList({ sessions }: SessionListProps) {
       await stopSound();
     }
 
-    await Audio.setAudioModeAsync({
-      allowsRecordingIOS: false,
-      playsInSilentModeIOS: true,
-      shouldDuckAndroid: false,
-      playThroughEarpieceAndroid: false,
-    });
+    try {
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: false,
+        playsInSilentModeIOS: true,
+        shouldDuckAndroid: false,
+        playThroughEarpieceAndroid: false,
+      });
 
-    const { sound: nextSound } = await Audio.Sound.createAsync(
-      { uri: session.fileUri },
-      { shouldPlay: true, volume: 1.0 },
-      (status) => {
-        if (!status.isLoaded) return;
-        if (status.didJustFinish) {
-          void stopSound();
-        }
-      },
-    );
+      const { sound: nextSound } = await Audio.Sound.createAsync(
+        { uri: session.fileUri },
+        { shouldPlay: true, volume: 1.0 },
+        (status) => {
+          if (!status.isLoaded) return;
+          if (status.didJustFinish) {
+            void stopSound();
+          }
+        },
+      );
 
-    setSound(nextSound);
-    setPlayingId(session.id);
+      setSound(nextSound);
+      setPlayingId(session.id);
+    } catch (err) {
+      console.error('Failed to play session:', err);
+    }
   };
 
   if (sessions.length === 0) {

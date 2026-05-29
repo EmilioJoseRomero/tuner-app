@@ -26,7 +26,8 @@ export function MicTestScreen() {
       } else {
         setError(null);
       }
-    } catch {
+    } catch (err) {
+      console.error('Microphone permission error:', err);
       setHasPermission(false);
       setError('Microphone permission error');
     }
@@ -63,6 +64,7 @@ export function MicTestScreen() {
       setError(null);
     } catch (err) {
       recordingRef.current = null;
+      console.error('Failed to start recording:', err);
       setStatus('Listo');
       setError(`Failed to start recording: ${String(err)}`);
     } finally {
@@ -76,7 +78,8 @@ export function MicTestScreen() {
 
     try {
       await recording.stopAndUnloadAsync();
-    } catch {
+    } catch (err) {
+      console.error('Failed to stop recording:', err);
       // Ignore stop errors.
     }
 
