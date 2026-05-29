@@ -1,0 +1,40 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "ignoreDeprecations": "6.0",
+    "baseUrl": ".",
+    "paths": {
+      // Domain Layer
+      "@domain/*": ["src/domain/*"],
+      "@domain/entities/*": ["src/domain/entities/*"],
+      "@domain/services/*": ["src/domain/services/*"],
+      "@domain/value-objects/*": ["src/domain/value-objects/*"],
+      
+      // Application Layer
+      "@application/*": ["src/application/*"],
+      "@application/use-cases/*": ["src/application/use-cases/*"],
+      "@application/dto/*": ["src/application/dto/*"],
+      
+      // Infrastructure Layer
+      "@infrastructure/*": ["src/infrastructure/*"],
+      "@infrastructure/audio/*": ["src/infrastructure/audio/*"],
+      "@infrastructure/dsp/*": ["src/infrastructure/dsp/*"],
+      "@infrastructure/sensors/*": ["src/infrastructure/sensors/*"],
+      
+      // Presentation Layer
+      "@presentation/*": ["src/presentation/*"],
+      "@hooks/*": ["src/presentation/hooks/*"],
+      "@components/*": ["src/presentation/components/*"],
+      "@screens/*": ["src/presentation/screens/*"],
+      "@navigation/*": ["src/presentation/navigation/*"],
+      "@styles/*": ["src/presentation/styles/*"],
+      
+      // Shared
+      "@shared/*": ["src/shared/*"],
+      "@shared/constants/*": ["src/shared/constants/*"],
+      "@shared/types/*": ["src/shared/types/*"],
+      "@shared/utils/*": ["src/shared/utils/*"]
+    }
+  }
+}
