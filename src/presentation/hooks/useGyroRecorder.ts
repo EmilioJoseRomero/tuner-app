@@ -44,7 +44,7 @@ export function useGyroRecorder() {
   const stoppingRef = useRef(false);
 
   useEffect(() => {
-    void loadSessions();
+    void loadSessions(); // Load recording sessions
   }, []);
 
   useEffect(() => {
